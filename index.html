@@ -21,6 +21,15 @@
       font-size: 60px;
       text-align: center;
   }
+  #buttons {
+      width: 100%;
+      background: url('../images/finals/wood_top.png') repeat-x;
+      display: block;
+      position: fixed;
+      bottom: 150px;
+      left: 0;
+      z-index: 100;
+  }
   
   </style>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
@@ -109,7 +118,7 @@
               title:"Hello World!"
         });
         
-        $("#message").text("Sandy is "+ Math.round(data.rows[0].distance)+"Km away from you");
+        $("#message").text("Sandy is "+ Math.round(data.rows[0].distance)+"Km (or "+ Math.round(data.rows[0].distance*0.62)+" miles) away from you");
 
         var geodesicOptions = {
           strokeColor: '#CC0099',
@@ -151,5 +160,15 @@
 <body onload="initialize()">
   <div id="map"></div>
   <div id="message">-</div>
+  <!-- AddThis Button BEGIN -->
+  <div class="addthis_toolbox addthis_default_style " id="buttons">
+  <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+  <a class="addthis_button_tweet"></a>
+  <a class="addthis_button_pinterest_pinit"></a>
+  <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
+  <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-508ee400053b6aa9"></script>
+  <!-- AddThis Button END -->
 </body>
 </html>
