@@ -12,7 +12,6 @@
   #message {
       height: 35px;
       width: 100%;
-      background: url('../images/finals/wood_top.png') repeat-x;
       display: block;
       position: fixed;
       top: 150px;
@@ -23,7 +22,6 @@
   }
   #buttons {
       width: 100%;
-      background: url('../images/finals/wood_top.png') repeat-x;
       display: block;
       position: fixed;
       bottom: 50px;
@@ -32,17 +30,16 @@
   }
   
   </style>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-  <link rel="stylesheet" href="css/cartodb-gmapsv3.css">
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
   <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=geometry,weather&sensor=false"></script>
-  <script type="text/javascript" src="js/wax.g.js"></script>
-  <script type="text/javascript" src="dist/cartodb-infowindow.js"></script>
-  <script type="text/javascript" src="dist/cartodb-gmapsv3.js"></script>
+  <script language="JavaScript" src="http://j.maxmind.com/app/geoip.js"></script>
+  
 
   <script type="text/javascript">
 
-  var map, infowindow, cartodb_gmaps1, cartodb_gmaps2;
+  var map;
+  var userlatitude,userlongitude;
 
   function initialize() {
       stylez=[
@@ -76,21 +73,17 @@
       styles: stylez
     });
     
+    if(google.loader.ClientLocation && 1==2) { 
+        userlatitude = google.loader.ClientLocation.latitude;
+        userlongitude = google.loader.ClientLocation.longitude;
+    } else {
+        userlatitude = geoip_latitude();
+		userlongitude = geoip_longitude();
+    }
     
-/*
-    // First cartodb layer, countries
-    cartodb_gmaps1 = new CartoDBLayer({
-      map: map,
-      user_name:'yidu',
-      table_name: 'pop_race_map',
-      query: "SELECT * FROM {{table_name}}",
-      opacity: 0.7,
-      debug: true
-    });
-
-*/
+    
     $.ajax({
-      url: "http://osm2.cartodb.com/api/v2/sql?q=SELECT%20ST_Distance(the_geom::geography,ST_SetSRID(ST_Makepoint("+google.loader.ClientLocation.longitude+","+google.loader.ClientLocation.latitude+"),4326)::geography)/1000%20as%20distance,ST_X(the_geom)%20as%20lon,ST_Y(the_geom)%20as%20lat,locationtime%20FROM%20sandy%20ORDER%20BY%20locationtime%20DESC%20LIMIT%201",
+      url: "http://osm2.cartodb.com/api/v2/sql?q=SELECT%20ST_Distance(the_geom::geography,ST_SetSRID(ST_Makepoint("+userlongitude+","+userlatitude+"),4326)::geography)/1000%20as%20distance,ST_X(the_geom)%20as%20lon,ST_Y(the_geom)%20as%20lat,locationtime%20FROM%20sandy%20ORDER%20BY%20locationtime%20DESC%20LIMIT%201",
       dataType:"jsonp"
     }).done(function(data) { 
         var bound = new google.maps.LatLngBounds();
@@ -109,8 +102,8 @@
         
         
         var userLatlng = new google.maps.LatLng(
-            google.loader.ClientLocation.latitude,
-            google.loader.ClientLocation.longitude); 
+            userlatitude,
+            userlongitude); 
             
         bound.extend(userLatlng);       
         var user = new google.maps.Marker({
