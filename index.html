@@ -81,15 +81,15 @@
 
 */
     $.ajax({
-      url: "http://api.wunderground.com/api/2170b5dce1598161/currenthurricane/view.json",
+      url: "http://osm2.cartodb.com/api/v2/sql?q=SELECT%20ST_Distance(the_geom::geography,ST_SetSRID(ST_Makepoint("+google.loader.ClientLocation.longitude+","+google.loader.ClientLocation.latitude+"),4326)::geography)/1000%20as%20distance,ST_X(the_geom)%20as%20lon,ST_Y(the_geom)%20as%20lat,locationtime%20FROM%20sandy%20ORDER%20BY%20locationtime%20DESC%20LIMIT%201",
       dataType:"jsonp"
     }).done(function(data) { 
         var bound = new google.maps.LatLngBounds();
         
         
         var sandyLatlng = new google.maps.LatLng(
-            data.currenthurricane[0].Current.lat,
-            data.currenthurricane[0].Current.lon);
+            data.rows[0].lat,
+            data.rows[0].lon);
         bound.extend(sandyLatlng);    
 
         var sandy = new google.maps.Marker({
@@ -109,7 +109,7 @@
               title:"Hello World!"
         });
         
-        $("#message").text("Sandy is "+ Math.round(google.maps.geometry.spherical.computeLength([sandyLatlng,userLatlng])/1000)+"Km away from you");
+        $("#message").text("Sandy is "+ Math.round(data.rows[0].distance)+"Km away from you");
 
         var geodesicOptions = {
           strokeColor: '#CC0099',
